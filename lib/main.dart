@@ -1,3 +1,4 @@
+import 'package:cozinhandoemcasa/screens/home.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -7,11 +8,11 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Cozinhando em casa"),
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.deepOrange,
       ),
-      body: Text("teste"),
+      home: Home(),
     );
   }
 }
