@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 
 import 'package:cozinhandoemcasa/models/recipe.dart';
+import 'package:cozinhandoemcasa/screens/details.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -33,28 +34,31 @@ class HomeState extends State<Home> {
           itemCount: recipes != null ? recipes.length : 0,
           itemBuilder: (context, index) {
             Recipe recipe = Recipe.fromJson(recipes[index]);
-            return _buildCard(recipe.title, recipe.image);
+            return _buildCard(recipe);
           },
         );
       },
     );
   }
 
-  Widget _buildCard(String cardTitle, String cardImageUrl) {
-    return SizedBox(
-      height: 300,
-      child: Card(
-        margin: EdgeInsets.all(20),
-        child: Column(
-          children: <Widget>[
-            Stack(
-              children: [
-                _buildCardImage(cardImageUrl),
-                _buildCardGradient(),
-                _buildCardText(cardTitle),
-              ],
-            ),
-          ],
+  Widget _buildCard(Recipe recipe) {
+    return GestureDetector(
+      onTap: () => handleTapCard(context, recipe),
+      child: SizedBox(
+        height: 300,
+        child: Card(
+          margin: EdgeInsets.all(20),
+          child: Column(
+            children: <Widget>[
+              Stack(
+                children: [
+                  _buildCardImage(recipe.image),
+                  _buildCardGradient(),
+                  _buildCardText(recipe.title),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -94,6 +98,13 @@ class HomeState extends State<Home> {
           Colors.deepOrange,
         ],
       )),
+    );
+  }
+
+  void handleTapCard(BuildContext context, Recipe recipe) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Detail(recipe: recipe)),
     );
   }
 }
