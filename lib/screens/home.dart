@@ -1,32 +1,57 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class Home extends StatelessWidget {
+import 'package:cozinhandoemcasa/models/recipe.dart';
+
+class Home extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => HomeState();
+}
+
+class HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildHomeBard(),
-      body: _buidHomeBody(),
+      appBar: _buildHomeBar(),
+      body: _buildCardList(),
     );
   }
 
-  Widget _buildHomeBard() {
+  Widget _buildHomeBar() {
     return AppBar(
       title: Text("Cozinhando em casa"),
     );
   }
 
-  Widget _buidHomeBody() {
+  Widget _buildCardList() {
+    return FutureBuilder(
+      future: DefaultAssetBundle.of(context).loadString('assets/receitas.json'),
+      builder: (context, snapshot) {
+        List<dynamic> recipes = json.decode(snapshot.data.toString());
+
+        return ListView.builder(
+          itemCount: recipes != null ? recipes.length : 0,
+          itemBuilder: (context, index) {
+            Recipe recipe = Recipe.fromJson(recipes[index]);
+            return _buildCard(recipe.title, recipe.image);
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildCard(String cardTitle, String cardImageUrl) {
     return SizedBox(
       height: 300,
       child: Card(
-        margin: EdgeInsets.all(16.0),
+        margin: EdgeInsets.all(20),
         child: Column(
           children: <Widget>[
             Stack(
               children: [
-                _buildCardImage(
-                    'https://cdn.guiadacozinha.com.br/wp-content/uploads/2019/11/bolinho-de-chuva-tradicional-receita-1.jpg'),
-                _buildCardText("Bolinhos de chuva"),
+                _buildCardImage(cardImageUrl),
+                _buildCardGradient(),
+                _buildCardText(cardTitle),
               ],
             ),
           ],
@@ -36,10 +61,10 @@ class Home extends StatelessWidget {
   }
 
   Widget _buildCardImage(String cardImageUrl) {
-    return Image.network(
+    return Image.asset(
       cardImageUrl,
       fit: BoxFit.fill,
-      height: 268,
+      height: 260,
     );
   }
 
@@ -49,8 +74,26 @@ class Home extends StatelessWidget {
       left: 10,
       child: Text(
         cardText,
-        style: TextStyle(fontSize: 16),
+        style: TextStyle(
+          fontSize: 16,
+          color: Colors.white,
+        ),
       ),
+    );
+  }
+
+  Widget _buildCardGradient() {
+    return Container(
+      height: 260,
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+        begin: FractionalOffset.topCenter,
+        end: FractionalOffset.bottomCenter,
+        colors: [
+          Colors.transparent,
+          Colors.deepOrange,
+        ],
+      )),
     );
   }
 }
